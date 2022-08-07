@@ -1,6 +1,5 @@
 package com.giimhana.bookStore.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,5 +36,12 @@ public class BookService {
 
     private Function<Book, BookDto> convertBookModelToBookdto() {
         return book -> modelMapper.map(book, BookDto.class);
+    }
+
+    public List<BookDto> getBooksByTitle(String bookTitle) {
+
+        List<Book> booksByTitle = bookRespository.findBooksByTitleIgnoreCase(bookTitle);
+        return booksByTitle.stream().map(convertBookModelToBookdto()).collect(Collectors.toList());
+
     }
 }
