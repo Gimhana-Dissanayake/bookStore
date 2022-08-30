@@ -6,6 +6,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.giimhana.bookStore.config.JwtUtil;
 import com.giimhana.bookStore.dto.AuthenticationRequest;
 import com.giimhana.bookStore.dto.AuthenticationResponse;
-
-import io.swagger.models.Response;
 
 @RestController
 @RequestMapping("api/v1")
@@ -31,6 +30,7 @@ public class UserController {
         this.jwtUtil = jwtUtil;
     }
 
+    @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         try {
 
@@ -44,7 +44,7 @@ public class UserController {
         UserDetails userDetails = userDetailService.loadUserByUsername(request.getEmail());
         String token = jwtUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthenticationResponse(token));
+        return ResponseEntity.ok(new AuthenticationResponse("Bearer " + token));
     }
 
 }
