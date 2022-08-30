@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.giimhana.bookStore.service.UserDetailService;
 
@@ -18,10 +19,13 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     private final UserDetailService userDetailService;
     private final PasswordEncoder passwordEncoder;
+    private final JwtRequestFilter jwtRequestFilter;
 
-    public SecurityConfigurer(UserDetailService userDetailService, PasswordEncoder passwordEncoder) {
+    public SecurityConfigurer(UserDetailService userDetailService, PasswordEncoder passwordEncoder,
+            JwtRequestFilter jwtRequestFilter) {
         this.userDetailService = userDetailService;
         this.passwordEncoder = passwordEncoder;
+        this.jwtRequestFilter = jwtRequestFilter;
     }
 
     @Override
@@ -39,6 +43,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests().antMatchers("/api/v1/login").permitAll().anyRequest().authenticated();
     }
 
