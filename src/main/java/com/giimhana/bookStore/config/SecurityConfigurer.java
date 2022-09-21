@@ -50,14 +50,14 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
             CorsConfiguration corsConfiguration = new CorsConfiguration();
             corsConfiguration.setAllowedOrigins(Collections.singletonList("*"));
             corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
             corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
             return corsConfiguration;
         }).and()
 
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests().antMatchers("/api/v1/login").permitAll().anyRequest().authenticated();
+                .authorizeRequests().antMatchers("/api/v1/login").permitAll().antMatchers("/api/v1/register")
+                .permitAll().anyRequest().authenticated();
     }
 
     @Bean
